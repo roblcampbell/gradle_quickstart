@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName = 'hello.HelloWorld'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "joda-time:joda-time:2.2"
+}
+
+jar {
+    baseName = 'gs-gradle'
+    version =  '0.1.0'
+	manifest { 
+		attributes "Main-Class": "$mainClassName"
+	}
+}
+
+task fatJar(type: Jar) {
+    baseName = 'gs-gradle-all'
+	manifest { 
+		attributes "Main-Class": "$mainClassName"
+	}
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+
